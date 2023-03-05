@@ -3,7 +3,8 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 const dateInput = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('[data-start]');
-const date = new Date();
+const fp = flatpickr(dateInput);
+const now = new Date();
 
 startBtn.disabled = true;
 
@@ -13,7 +14,7 @@ flatpickr(dateInput, {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates[0].getTime() < date.getTime()) {
+    if (selectedDates[0].getTime() < now.getTime()) {
       startBtn.disabled = true;
       return alert('Please choose a date in the future');
     }
@@ -22,5 +23,7 @@ flatpickr(dateInput, {
     // console.log(date.getTime());
     // console.log(selectedDates[0]);
     // console.log(selectedDates[0].getTime());
+    console.log(fp.input.value);
   },
+  onChange(selectedDates) {},
 });
