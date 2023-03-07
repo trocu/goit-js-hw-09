@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
 
 const dateInput = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('[data-start]');
@@ -9,10 +10,11 @@ const minutesCounter = document.querySelector('[data-minutes]');
 const secondsCounter = document.querySelector('[data-seconds]');
 const fp = flatpickr(dateInput);
 const now = new Date();
-let timerId = null;
 
+//Deactivate button before date pick
 startBtn.disabled = true;
 
+//The body of the flatpick library
 flatpickr(dateInput, {
   enableTime: true,
   time_24hr: true,
@@ -21,35 +23,34 @@ flatpickr(dateInput, {
   onClose(selectedDates) {
     if (selectedDates[0].getTime() < now.getTime()) {
       startBtn.disabled = true;
-      return alert('Please choose a date in the future');
+      return Notiflix.Notify.failure('Please choose a date in the future');
     }
     startBtn.disabled = false;
   },
 });
 
+//Reset timer ID
+let timerId = null;
+
+//Convert epoch to ms and start countdown
 startBtn.addEventListener('click', timeLeft);
 function timeLeft() {
   timerId = setInterval(() => {
     const dateSelected = Date.parse(fp.input.value);
     const remainingTime = dateSelected - Date.now();
     const { days, hours, minutes, seconds } = convertMs(remainingTime);
-    daysCounter.textContent = days;
-    hoursCounter.textContent = hours;
-    minutesCounter.textContent = minutes;
-    secondsCounter.textContent = seconds;
+
+    //If timer reaches zero stop counting
+    if (seconds === -1) {
+      clearInterval(timerId);
+      return;
+    }
+    daysCounter.textContent = addLeadingZero(days);
+    hoursCounter.textContent = addLeadingZero(hours);
+    minutesCounter.textContent = addLeadingZero(minutes);
+    secondsCounter.textContent = addLeadingZero(seconds);
   }, 1000);
 }
-// const timeLeft = () => {
-//   timerId = setInterval(() => {
-//     const dateSelected = Date.parse(fp.input.value);
-//     const remainingTime = dateSelected - Date.now();
-//     const { days, hours, minutes, seconds } = convertMs(remainingTime);
-//     daysCounter.textContent = days;
-//     hoursCounter.textContent = hours;
-//     minutesCounter.textContent = minutes;
-//     secondsCounter.textContent = seconds;
-//   }, 1000);
-// };
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -70,5 +71,7 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-// console.log(new Date(dateInput.value));
-// console.log(Date.parse(fp.input.value));
+//Adding a leading zero to a single number
+function addLeadingZero(value) {
+  return value.toString().padStart(2, '0');
+}
