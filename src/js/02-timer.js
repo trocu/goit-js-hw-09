@@ -9,7 +9,6 @@ const hoursCounter = document.querySelector('[data-hours]');
 const minutesCounter = document.querySelector('[data-minutes]');
 const secondsCounter = document.querySelector('[data-seconds]');
 const fp = flatpickr(dateInput);
-const now = new Date();
 
 //Deactivate button before date pick
 startBtn.disabled = true;
@@ -21,7 +20,7 @@ flatpickr(dateInput, {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates[0].getTime() < now.getTime()) {
+    if (selectedDates[0].getTime() <= Date.now()) {
       startBtn.disabled = true;
       return Notiflix.Notify.failure('Please choose a date in the future');
     }
