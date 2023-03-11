@@ -1,54 +1,42 @@
+import Notiflix from 'notiflix';
 const form = document.querySelector('.form');
-const { delay, step, amount } = form.elements;
 
-// form.addEventListener('input', saveInput);
-// function saveInput(e) {
-//   const dataInput = {
-//     delay: delay.value,
-//     step: step.value,
-//     amount: amount.value,
-//   };
-//   console.log(dataInput);
-// }
+form.addEventListener('submit', saveInput);
+function saveInput(e) {
+  e.preventDefault();
 
-// form.addEventListener('submit', createPromise(amount, delay));
+  const { delay, step, amount } = e.currentTarget.elements;
 
-form.addEventListener('input', e => {
-  const dataInput = {
-    delay: delay.value,
-    step: step.value,
-    amount: amount.value,
-  };
-  console.log(dataInput);
-});
+  for (let i = 1; i <= amount.value; i++) {
+    let position = +i;
+    let stepDelay = step.value * i;
+    let delayed = Number(delay.value) + stepDelay;
 
-let counter = 0;
-let timerId = null;
+    createPromise(position, delayed)
+      .then(({ position, delay }) => {
+        Notiflix.Notify.success(
+          `✅ Fulfilled promise ${position} in ${delay}ms`
+        );
+      })
+      .catch(({ position, delay }) => {
+        Notiflix.Notify.failure(
+          `❌ Rejected promise ${position} in ${delay}ms`
+        );
+      });
+  }
+}
 
-form.addEventListener('submit', createPromise());
 function createPromise(position, delay) {
-  timerId = setInterval(() => {
-    const shouldResolve = Math.random() > 0.3;
-    const promise = new Promise((resolve, reject) => {
+  const shouldResolve = Math.random() > 0.3;
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
       if (shouldResolve) {
         // Fulfill
-        resolve('Hello world!');
+        resolve({ position, delay });
       } else {
         // Reject
-        reject('Ooops!');
+        reject({ position, delay });
       }
-    });
-    console.log(promise);
-    promise
-      .then(result => {
-        console.log(result);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    //Kills interval
-    if (++counter === 5) {
-      clearInterval(timerId);
-    }
-  }, 2000);
+    }, delay);
+  });
 }
