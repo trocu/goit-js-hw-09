@@ -25,7 +25,6 @@ function saveInput(e) {
   const { delay, step, amount } = e.currentTarget.elements;
   //Creates an array of numbers (lodash/range) for creating new promises
   range(1, Number(amount.value) + 1).forEach(number => {
-    // for (let i = 1; i <= amount.value; i++) {
     let position = number;
     let stepDelay = step.value * number;
     let startDelay = Number(delay.value) - step.value;
@@ -43,6 +42,5 @@ function saveInput(e) {
           `❌ Rejected promise ${position} in ${delay}ms`
         );
       });
-    // }
   });
 }
