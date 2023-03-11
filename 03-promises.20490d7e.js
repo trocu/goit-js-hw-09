@@ -1,2 +1,0 @@
-const e=document.querySelector(".form"),{delay:o,step:l,amount:t}=e.elements;e.addEventListener("input",(e=>{const n={delay:o.value,step:l.value,amount:t.value};console.log(n)}));let n=0,s=null;e.addEventListener("submit",void(s=setInterval((()=>{const e=Math.random()>.3,o=new Promise(((o,l)=>{e?o("Hello world!"):l("Ooops!")}));console.log(o),o.then((e=>{console.log(e)})).catch((e=>{console.log(e)})),5==++n&&clearInterval(s)}),2e3)));
-//# sourceMappingURL=03-promises.20490d7e.js.map
