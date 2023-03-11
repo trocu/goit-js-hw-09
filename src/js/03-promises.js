@@ -1,5 +1,6 @@
 import Notiflix from 'notiflix';
 const form = document.querySelector('.form');
+import range from 'lodash/range';
 
 //Make a new promise as the result of the function
 function createPromise(position, delay) {
@@ -22,11 +23,13 @@ function saveInput(e) {
   e.preventDefault();
 
   const { delay, step, amount } = e.currentTarget.elements;
-  //Add a loop for creating new promises
-  for (let i = 1; i <= amount.value; i++) {
-    let position = +i;
-    let stepDelay = step.value * i;
-    let delayed = Number(delay.value) + stepDelay;
+  //Creates an array of numbers (lodash/range) for creating new promises
+  range(1, Number(amount.value) + 1).forEach(number => {
+    // for (let i = 1; i <= amount.value; i++) {
+    let position = number;
+    let stepDelay = step.value * number;
+    let startDelay = Number(delay.value) - step.value;
+    let delayed = startDelay + stepDelay;
 
     //Create a new promise
     createPromise(position, delayed)
@@ -40,5 +43,6 @@ function saveInput(e) {
           `❌ Rejected promise ${position} in ${delay}ms`
         );
       });
-  }
+    // }
+  });
 }
